@@ -31,7 +31,18 @@ angular.module('ui.bootstrap.transition', [])
     $timeout(function() {
       var handleTrigger = function(trigger) {
         if ( angular.isString(trigger) ) {
-          element.addClass(trigger);
+          // Additional CSS class semantics
+          if ( trigger.indexOf('-') === 0 ) {
+            element.removeClass(trigger.substr(1));
+          } else if ( trigger.indexOf('^') === 0 ) {
+            var cls = trigger.substr(1);
+            element[element.hasClass(cls) ? 'removeClass' : 'addClass'](cls);
+          } else {
+            if(trigger.indexOf('+') === 0) {
+              trigger = trigger.substr(1);
+            }
+            element.addClass(trigger);
+          }
         } else if ( angular.isFunction(trigger) ) {
           trigger(element);
         } else if ( angular.isObject(trigger) ) {

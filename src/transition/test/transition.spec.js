@@ -37,6 +37,31 @@ describe('$transition', function() {
     expect(element.addClass).toHaveBeenCalledWith('triggerClass');
   });
 
+  it('remove the css class if passed a string starting with `-`', function() {
+    var element = angular.element('<div class="foo"></div>');
+    spyOn(element, 'removeClass');
+    $transition(element, '-foo');
+    $timeout.flush();
+
+    expect(element.removeClass).toHaveBeenCalledWith('foo');
+  });
+
+  it('toggle (removeClass) the css class if passed a string starting with `^`', function() {
+    var element = angular.element('<div class="foo"></div>');
+    spyOn(element, 'removeClass');
+    $transition(element, '^foo');
+    $timeout.flush();
+    expect(element.removeClass).toHaveBeenCalledWith('foo');
+  });
+
+  it('toggle (addClass) the css class if passed a string starting with `^`', function() {
+    var element = angular.element('<div></div>');
+    spyOn(element, 'addClass');
+    $transition(element, '^foo');
+    $timeout.flush();
+    expect(element.addClass).toHaveBeenCalledWith('foo');
+  });
+
   it('changes the css if passed array of strings', function() {
     var element = angular.element('<div></div>');
     spyOn(element, 'addClass');
@@ -67,7 +92,6 @@ describe('$transition', function() {
     expect(element.addClass).toHaveBeenCalledWith(triggerStyle[1]);
   });
 
-
   it('calls the function if passed', function() {
     var element = angular.element('<div></div>');
     var triggerFunction = jasmine.createSpy('triggerFunction');
@@ -86,7 +110,6 @@ describe('$transition', function() {
     expect(triggerFunction).toHaveBeenCalledWith(element);
     expect(element.addClass).toHaveBeenCalledWith('triggerClass');
   });
-
 
   // Versions of Internet Explorer before version 10 do not have CSS transitions
   if ( !ie  || ie > 9 ) {
