@@ -37,6 +37,16 @@ describe('$transition', function() {
     expect(element.addClass).toHaveBeenCalledWith('triggerClass');
   });
 
+  it('changes the css if passed array of strings', function() {
+    var element = angular.element('<div></div>');
+    spyOn(element, 'addClass');
+    $transition(element, ['triggerClass', 'triggerClass2']);
+    $timeout.flush();
+
+    expect(element.addClass).toHaveBeenCalledWith('triggerClass');
+    expect(element.addClass).toHaveBeenCalledWith('triggerClass2');
+  });
+
   it('changes the style if passed an object', function() {
     var element = angular.element('<div></div>');
     var triggerStyle = { height: '11px' };
@@ -46,6 +56,18 @@ describe('$transition', function() {
     expect(element.css).toHaveBeenCalledWith(triggerStyle);
   });
 
+  it('changes the style and css if passed an object and string', function() {
+    var element = angular.element('<div></div>');
+    var triggerStyle = [{ height: '11px' }, 'triggerClass'];
+    spyOn(element, 'css');
+    spyOn(element, 'addClass');
+    $transition(element, triggerStyle);
+    $timeout.flush();
+    expect(element.css).toHaveBeenCalledWith(triggerStyle[0]);
+    expect(element.addClass).toHaveBeenCalledWith(triggerStyle[1]);
+  });
+
+
   it('calls the function if passed', function() {
     var element = angular.element('<div></div>');
     var triggerFunction = jasmine.createSpy('triggerFunction');
@@ -53,6 +75,18 @@ describe('$transition', function() {
     $timeout.flush();
     expect(triggerFunction).toHaveBeenCalledWith(element);
   });
+
+  it('calls the function and changes the css if passed a function and string', function() {
+    var element = angular.element('<div></div>');
+    var triggerFunction = jasmine.createSpy('triggerFunction');
+    spyOn(element, 'addClass');
+    var trigger = [triggerFunction, 'triggerClass'];
+    $transition(element, trigger);
+    $timeout.flush();
+    expect(triggerFunction).toHaveBeenCalledWith(element);
+    expect(element.addClass).toHaveBeenCalledWith('triggerClass');
+  });
+
 
   // Versions of Internet Explorer before version 10 do not have CSS transitions
   if ( !ie  || ie > 9 ) {
