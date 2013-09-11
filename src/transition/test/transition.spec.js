@@ -54,6 +54,23 @@ describe('$transition', function() {
     expect(triggerFunction).toHaveBeenCalledWith(element);
   });
 
+  // transitionend emulation
+  describe('emulateTransitionEnd', function() {
+    it('should emit transition end-event after the specified duration', function() {
+      var element = angular.element('<div></div>');
+      var transitionEndHandler = jasmine.createSpy('transitionEndHandler');
+
+      // There is no transition property, so transitionend could not be fired 
+      // on its own.
+      var promise = $transition(element, {height: '100px'});
+      promise.then(transitionEndHandler);
+      promise.emulateTransitionEnd(1);
+
+      $timeout.flush();
+      expect(transitionEndHandler).toHaveBeenCalledWith(element);
+    });
+  });
+  
   // Versions of Internet Explorer before version 10 do not have CSS transitions
   if ( !ie  || ie > 9 ) {
     describe('transitionEnd event', function() {
