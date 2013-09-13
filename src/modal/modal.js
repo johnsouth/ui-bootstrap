@@ -163,6 +163,7 @@ angular.module('ui.bootstrap.modal', [])
 
       $modalStack.open = function (modalInstance, modal) {
 
+        // @TODO: Why not  pass `modal` as the second argument?
         openedWindows.add(modalInstance, {
           deferred: modal.deferred,
           modalScope: modal.scope,
@@ -178,6 +179,8 @@ angular.module('ui.bootstrap.modal', [])
         var modalDomEl = $compile(angularDomEl)(modal.scope);
         openedWindows.top().value.modalDomEl = modalDomEl;
         body.append(modalDomEl);
+
+        backdropScope.modal = modal;
 
         if (backdropIndex() >= 0 && !backdropDomEl) {
             backdropjqLiteEl = angular.element('<div modal-backdrop></div>');
@@ -272,9 +275,9 @@ angular.module('ui.bootstrap.modal', [])
 
             templateAndResolvePromise.then(function resolveSuccess(tplAndVars) {
 
-              var modalScope = (modalOptions.scope || $rootScope).$new();
+              modalOptions.scope = (modalOptions.scope || $rootScope).$new();
 
-              var ctrlInstance, ctrlLocals = {};
+              var ctrlLocals = {};
               var resolveIter = 1;
 
               //controllers
@@ -285,17 +288,13 @@ angular.module('ui.bootstrap.modal', [])
                   ctrlLocals[key] = tplAndVars[resolveIter++];
                 });
 
-                ctrlInstance = $controller(modalOptions.controller, ctrlLocals);
+                modalOptions.controller = $controller(modalOptions.controller, ctrlLocals);
               }
 
-              $modalStack.open(modalInstance, {
-                scope: modalScope,
-                deferred: modalResultDeferred,
-                content: tplAndVars[0],
-                backdrop: modalOptions.backdrop,
-                keyboard: modalOptions.keyboard,
-                windowClass: modalOptions.windowClass
-              });
+              modalOptions.deferred = modalResultDeferred;
+              modalOptions.content = tplAndVars[0];
+
+              $modalStack.open(modalInstance, modalOptions);
 
             }, function resolveError(reason) {
               modalResultDeferred.reject(reason);
