@@ -212,7 +212,7 @@ angular.module('ui.bootstrap.collapse',['ui.bootstrap.transition'])
           pixels = pixels + "px";
         }
         query[dimension] = pixels;
-        currentTransition = $transition(element,query);
+        currentTransition = $transition(element,query).emulateTransitionEnd(350);
         currentTransition.then(
           function() {
             events['after' + name](dimension);
