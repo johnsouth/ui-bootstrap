@@ -282,7 +282,7 @@ angular.module('ui.bootstrap.modal', [])
 
               //controllers
               if (modalOptions.controller) {
-                ctrlLocals.$scope = modalScope;
+                ctrlLocals.$scope = modalOptions.scope;
                 ctrlLocals.$modalInstance = modalInstance;
                 angular.forEach(modalOptions.resolve, function (value, key) {
                   ctrlLocals[key] = tplAndVars[resolveIter++];
