@@ -39,7 +39,52 @@ angular.module('ui.bootstrap.position', [])
       return offsetParent || docDomEl;
     };
 
-    return {
+    /**
+     * Temporarily swap CSS properties in, and perform an operation. Based on jQuery's
+     * internal 'jQuery.swap' routine.
+     *
+     * @param element
+     * @param css object containing css property keys and values to swap in
+     * @callback operation to perform while the CSS properties are swapped in
+     */
+    var swapCss = function (element, css, callback) {
+      var ret, prop, old = {};
+      element = angular.element(element);
+      args = Array.prototype.slice.call(arguments, 3);
+
+      for (prop in css) {
+        old[prop] = element[0].style[prop];
+        element[0].style[prop] = css[prop];
+      }
+
+      ret = callback.apply(element, args);
+
+      for (prop in css) {
+        element[0].style[prop] = old[prop];
+      }
+
+      return ret;
+    };
+
+    var swapDisplay = /^(none|table(?!-c[ea]).+)/;
+    var cssShow = {
+      position: 'absolute',
+      visibility: 'hidden',
+      display: 'block'
+    };
+
+    /**
+     * Return offsetWidth or offsetHeight of an element.
+     */
+    var widthOrHeight = function(element, name) {
+      if (typeof element === 'string') {
+        name = element;
+        element = this;
+      }
+      return element[0][('offset' + name.charAt(0).toUpperCase() + name.substr(1))];
+    };
+
+    var service = {
       /**
        * Provides read-only equivalent of jQuery's position function:
        * http://api.jquery.com/position/
@@ -76,4 +121,19 @@ angular.module('ui.bootstrap.position', [])
         };
       }
     };
+
+    angular.forEach(['width', 'height'], function(name) {
+      service[name] = function(element, value) {
+        element = angular.element(element);
+        if (arguments.length > 1) {
+          return element.css(name, value);
+        }
+        if (element[0].offsetWidth === 0 && swapDisplay.test(getStyle(element[0], 'display'))) {
+          return swapCss(element, cssShow, widthOrHeight, name);
+        }
+        return widthOrHeight(element, name);
+      };
+    });
+
+    return service;
   }]);
