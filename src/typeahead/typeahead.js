@@ -277,7 +277,12 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
 }])
 
-  .directive('typeaheadPopup', function () {
+  .constant('typeaheadConfig', {
+    popupTemplateUrl: 'template/typeahead/typeahead-popup.html',
+    matchTemplateUrl: 'template/typeahead/typeahead-match.html'
+  })
+
+  .directive('typeaheadPopup', ['typeaheadConfig', function (typeaheadConfig) {
     return {
       restrict:'E',
       scope:{
@@ -288,7 +293,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         select:'&'
       },
       replace:true,
-      templateUrl:'template/typeahead/typeahead-popup.html',
+      templateUrl: typeaheadConfig.popupTemplateUrl,
       link:function (scope, element, attrs) {
 
         scope.templateUrl = attrs.templateUrl;
@@ -310,9 +315,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         };
       }
     };
-  })
+  }])
 
-  .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', function ($http, $templateCache, $compile, $parse) {
+  .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', 'typeaheadConfig', function ($http, $templateCache, $compile, $parse, typeaheadConfig) {
     return {
       restrict:'E',
       scope:{
@@ -321,7 +326,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         query:'='
       },
       link:function (scope, element, attrs) {
-        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || 'template/typeahead/typeahead-match.html';
+        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || typeaheadConfig.matchTemplateUrl;
         $http.get(tplUrl, {cache: $templateCache}).success(function(tplContent){
            element.replaceWith($compile(tplContent.trim())(scope));
         });

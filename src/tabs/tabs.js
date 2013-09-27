@@ -45,6 +45,12 @@ angular.module('ui.bootstrap.tabs', [])
   };
 }])
 
+.constant('tabsConfig', {
+  tabsetTemplateUrl: 'template/tabs/tabset.html',
+  tabTemplateUrl: 'template/tabs/tab.html',
+  titlesTemplateUrl: 'template/tabs/tabset-titles.html'
+})
+
 /**
  * @ngdoc directive
  * @name ui.bootstrap.tabs.directive:tabset
@@ -72,7 +78,7 @@ angular.module('ui.bootstrap.tabs', [])
   </file>
 </example>
  */
-.directive('tabset', function() {
+.directive('tabset', ['tabsConfig', function(tabsConfig) {
   return {
     restrict: 'EA',
     transclude: true,
@@ -80,7 +86,7 @@ angular.module('ui.bootstrap.tabs', [])
     require: '^tabset',
     scope: {},
     controller: 'TabsetController',
-    templateUrl: 'template/tabs/tabset.html',
+    templateUrl: tabsConfig.tabsetTemplateUrl,
     compile: function(elm, attrs, transclude) {
       return function(scope, element, attrs, tabsetCtrl) {
         scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
@@ -92,7 +98,7 @@ angular.module('ui.bootstrap.tabs', [])
       };
     }
   };
-})
+}])
 
 /**
  * @ngdoc directive
@@ -174,12 +180,12 @@ angular.module('ui.bootstrap.tabs', [])
   </file>
 </example>
  */
-.directive('tab', ['$parse', function($parse) {
+.directive('tab', ['$parse', 'tabsConfig', function($parse, tabsConfig) {
   return {
     require: '^tabset',
     restrict: 'EA',
     replace: true,
-    templateUrl: 'template/tabs/tab.html',
+    templateUrl: tabsConfig.tabTemplateUrl,
     transclude: true,
     scope: {
       heading: '@',
@@ -294,11 +300,11 @@ angular.module('ui.bootstrap.tabs', [])
   }
 })
 
-.directive('tabsetTitles', function() {
+.directive('tabsetTitles', ['tabsConfig', function(tabsConfig) {
   return {
     restrict: 'A',
     require: '^tabset',
-    templateUrl: 'template/tabs/tabset-titles.html',
+    templateUrl: tabsConfig.titlesTemplateUrl,
     replace: true,
     link: function(scope, elm, attrs, tabsetCtrl) {
       if (!scope.$eval(attrs.tabsetTitles)) {
@@ -311,4 +317,4 @@ angular.module('ui.bootstrap.tabs', [])
       }
     }
   };
-});
+}]);

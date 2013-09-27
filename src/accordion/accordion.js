@@ -1,7 +1,8 @@
 angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
 
 .constant('accordionConfig', {
-  closeOthers: true
+  closeOthers: true,
+  templateUrl: 'template/accordion/accordion.html'
 })
 
 .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
@@ -46,24 +47,28 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
 
 // The accordion directive simply sets up the directive controller
 // and adds an accordion CSS class to itself element.
-.directive('accordion', function () {
+.directive('accordion', function (accordionConfig) {
   return {
     restrict:'EA',
     controller:'AccordionController',
     transclude: true,
     replace: false,
-    templateUrl: 'template/accordion/accordion.html'
+    templateUrl: accordionConfig.templateUrl
   };
 })
 
+.constant('accordionGroupConfig', {
+  templateUrl: 'template/accordion/accordion-group.html'
+})
+
 // The accordion-group directive indicates a block of html that will expand and collapse in an accordion
-.directive('accordionGroup', ['$parse', '$transition', '$timeout', function($parse, $transition, $timeout) {
+.directive('accordionGroup', ['$parse', '$transition', '$timeout', 'accordionGroupConfig', function($parse, $transition, $timeout, accordionGroupConfig) {
   return {
     require:'^accordion',         // We need this directive to be inside an accordion
     restrict:'EA',
     transclude:true,              // It transcludes the contents of the directive into the template
     replace: true,                // The element containing the directive will be replaced with the template
-    templateUrl:'template/accordion/accordion-group.html',
+    templateUrl: accordionGroupConfig.templateUrl,
     scope:{ heading:'@' },        // Create an isolated scope and interpolate the heading attribute onto this scope
     controller: ['$scope', function($scope) {
       this.setHeading = function(element) {

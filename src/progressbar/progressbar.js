@@ -3,7 +3,9 @@ angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
 .constant('progressConfig', {
   animate: true,
   autoType: false,
-  stackedTypes: ['success', 'info', 'warning', 'danger']
+  stackedTypes: ['success', 'info', 'warning', 'danger'],
+  templateUrl: 'template/progressbar/progress.html',
+  barTemplateUrl: 'template/progressbar/bar.html'
 })
 
 .controller('ProgressBarController', ['$scope', '$attrs', 'progressConfig', function($scope, $attrs, progressConfig) {
@@ -43,7 +45,7 @@ angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
     this.clearBars();
 }])
 
-.directive('progress', function() {
+.directive('progress', ['progressConfig', function(progressConfig) {
     return {
         restrict: 'EA',
         replace: true,
@@ -53,7 +55,7 @@ angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
             onFull: '&',
             onEmpty: '&'
         },
-        templateUrl: 'template/progressbar/progress.html',
+        templateUrl: progressConfig.templateUrl,
         link: function(scope, element, attrs, controller) {
             scope.$watch('value', function(newValue, oldValue) {
                 controller.clearBars();
@@ -79,9 +81,9 @@ angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
             }, true);
         }
     };
-})
+}])
 
-.directive('progressbar', ['$transition', function($transition) {
+.directive('progressbar', ['$transition', 'progressConfig', function($transition, progressConfig) {
     return {
         restrict: 'EA',
         replace: true,
@@ -91,7 +93,7 @@ angular.module('ui.bootstrap.progressbar', ['ui.bootstrap.transition'])
             type: '=',
             animate: '='
         },
-        templateUrl: 'template/progressbar/bar.html',
+        templateUrl: progressConfig.barTemplateUrl,
         link: function(scope, element) {
             scope.$watch('width', function(value) {
                 if (scope.animate) {

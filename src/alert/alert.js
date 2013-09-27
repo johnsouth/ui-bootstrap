@@ -1,7 +1,13 @@
-angular.module("ui.bootstrap.alert", []).directive('alert', function () {
+angular.module("ui.bootstrap.alert", [])
+
+.constant('alertConfig', {
+  templateUrl: 'template/alert/alert.html'
+})
+
+.directive('alert', ['alertConfig', function (alertConfig) {
   return {
     restrict:'EA',
-    templateUrl:'template/alert/alert.html',
+    templateUrl: alertConfig.templateUrl,
     transclude:true,
     replace:true,
     scope: {
@@ -12,4 +18,4 @@ angular.module("ui.bootstrap.alert", []).directive('alert', function () {
       scope.closeable = "close" in iAttrs;
     }
   };
-});
+}]);

@@ -6,7 +6,8 @@ angular.module('ui.bootstrap.timepicker', [])
   showMeridian: true,
   meridians: ['AM', 'PM'],
   readonlyInput: false,
-  mousewheel: true
+  mousewheel: true,
+  templateUrl: 'template/timepicker/timepicker.html'
 })
 
 .directive('timepicker', ['$parse', '$log', 'timepickerConfig', function ($parse, $log, timepickerConfig) {
@@ -15,7 +16,7 @@ angular.module('ui.bootstrap.timepicker', [])
     require:'?^ngModel',
     replace: true,
     scope: {},
-    templateUrl: 'template/timepicker/timepicker.html',
+    templateUrl: timepickerConfig.templateUrl,
     link: function(scope, element, attrs, ngModel) {
       if ( !ngModel ) {
         return; // do nothing if no ng-model

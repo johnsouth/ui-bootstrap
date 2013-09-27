@@ -54,14 +54,19 @@ angular.module('ui.bootstrap.modal', [])
     };
   })
 
+  .constant('modalConfig', {
+    backdropTemplateUrl: 'template/modal/backdrop.html',
+    windowTemplateUrl: 'template/modal/window.html' 
+  })
+
 /**
  * A helper directive for the $modal service. It creates a backdrop element.
  */
-  .directive('modalBackdrop', ['$modalStack', '$timeout', function ($modalStack, $timeout) {
+  .directive('modalBackdrop', ['$modalStack', '$timeout', 'modalConfig', function ($modalStack, $timeout, modalConfig) {
     return {
       restrict: 'EA',
       replace: true,
-      templateUrl: 'template/modal/backdrop.html',
+      templateUrl: modalConfig.backdropTemplateUrl,
       link: function (scope, element, attrs) {
 
         //trigger CSS transitions
@@ -81,7 +86,7 @@ angular.module('ui.bootstrap.modal', [])
     };
   }])
 
-  .directive('modalWindow', ['$timeout', function ($timeout) {
+  .directive('modalWindow', ['$timeout', 'modalConfig', function ($timeout, modalConfig) {
     return {
       restrict: 'EA',
       scope: {
@@ -89,7 +94,7 @@ angular.module('ui.bootstrap.modal', [])
       },
       replace: true,
       transclude: true,
-      templateUrl: 'template/modal/window.html',
+      templateUrl: modalConfig.windowTemplateUrl,
       link: function (scope, element, attrs) {
         scope.windowClass = attrs.windowClass || '';
 
