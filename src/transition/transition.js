@@ -29,12 +29,30 @@ angular.module('ui.bootstrap.transition', [])
 
     // Wrap in a timeout to allow the browser time to update the DOM before the transition is to occur
     $timeout(function() {
-      if ( angular.isString(trigger) ) {
-        element.addClass(trigger);
-      } else if ( angular.isFunction(trigger) ) {
-        trigger(element);
-      } else if ( angular.isObject(trigger) ) {
-        element.css(trigger);
+      var handleTrigger = function(trigger) {
+        if ( angular.isString(trigger) ) {
+          // Additional CSS class semantics
+          if ( trigger.indexOf('-') === 0 ) {
+            element.removeClass(trigger.substr(1));
+          } else if ( trigger.indexOf('^') === 0 ) {
+            var cls = trigger.substr(1);
+            element[element.hasClass(cls) ? 'removeClass' : 'addClass'](cls);
+          } else {
+            if(trigger.indexOf('+') === 0) {
+              trigger = trigger.substr(1);
+            }
+            element.addClass(trigger);
+          }
+        } else if ( angular.isFunction(trigger) ) {
+          trigger(element);
+        } else if ( angular.isObject(trigger) ) {
+          element.css(trigger);
+        }
+      };
+      if(angular.isArray(trigger)) {
+        angular.forEach(trigger, handleTrigger);
+      } else {
+        handleTrigger(trigger);
       }
       //If browser does not support transitions, instantly resolve
       if ( !endEventName ) {
