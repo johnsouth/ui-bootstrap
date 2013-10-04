@@ -101,6 +101,7 @@ describe('$transition', function() {
   });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   it('calls the function and changes the css if passed a function and string', function() {
     var element = angular.element('<div></div>');
     var triggerFunction = jasmine.createSpy('triggerFunction');
@@ -113,6 +114,8 @@ describe('$transition', function() {
   });
 
 =======
+=======
+>>>>>>> origin/issue-911-bis2
   // transitionend emulation
   describe('emulateTransitionEnd', function() {
     it('should emit transition end-event after the specified duration', function() {
@@ -130,7 +133,10 @@ describe('$transition', function() {
     });
   });
   
+<<<<<<< HEAD
 >>>>>>> origin/feat-transition-emu
+=======
+>>>>>>> origin/issue-911-bis2
   // Versions of Internet Explorer before version 10 do not have CSS transitions
   if ( !ie  || ie > 9 ) {
     describe('transitionEnd event', function() {

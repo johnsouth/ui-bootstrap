@@ -49,6 +49,7 @@ describe('collapse directive', function () {
     scope.$digest();
     scope.isCollapsed = true;
     scope.$digest();
+    $timeout.flush();
     scope.isCollapsed = false;
     scope.$digest();
     $timeout.flush();
@@ -92,6 +93,7 @@ describe('collapse directive', function () {
       scope.$digest();
       scope.isCollapsed = true;
       scope.$digest();
+      $timeout.flush();
       scope.isCollapsed = false;
       scope.$digest();
       $timeout.flush();
