@@ -65,6 +65,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //expressions used by typeahead
       var parserResult = typeaheadParser.parse(attrs.typeahead);
 
+      var hasFocus;
 
       //pop-up element used to display matches
       var popUpEl = angular.element('<typeahead-popup></typeahead-popup>');
@@ -100,7 +101,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
           //it might happen that several async queries were in progress if a user were typing fast
           //but we are interested only in responses that correspond to the current view value
-          if (inputValue === modelCtrl.$viewValue) {
+          if (inputValue === modelCtrl.$viewValue && hasFocus) {
             if (matches.length > 0) {
 
               scope.activeIdx = 0;
@@ -145,7 +146,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
       modelCtrl.$parsers.unshift(function (inputValue) {
 
-        resetMatches();
+        hasFocus = true;
+
         if (inputValue && inputValue.length >= minSearch) {
           if (waitTime > 0) {
             if (timeoutPromise) {
@@ -157,6 +159,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
           } else {
             getMatchesAsync(inputValue);
           }
+        } else {
+          resetMatches();
         }
 
         if (isEditable) {
@@ -249,6 +253,10 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         }
       });
 
+      element.bind('blur', function (evt) {
+        hasFocus = false;
+      });
+
       // Keep reference to click handler to unbind it.
       var dismissClickHandler = function (evt) {
         if (element[0] !== evt.target) {
@@ -269,7 +277,12 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
 }])
 
-  .directive('typeaheadPopup', function () {
+  .constant('typeaheadConfig', {
+    popupTemplateUrl: 'template/typeahead/typeahead-popup.html',
+    matchTemplateUrl: 'template/typeahead/typeahead-match.html'
+  })
+
+  .directive('typeaheadPopup', ['typeaheadConfig', function (typeaheadConfig) {
     return {
       restrict:'E',
       scope:{
@@ -280,7 +293,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         select:'&'
       },
       replace:true,
-      templateUrl:'template/typeahead/typeahead-popup.html',
+      templateUrl: typeaheadConfig.popupTemplateUrl,
       link:function (scope, element, attrs) {
 
         scope.templateUrl = attrs.templateUrl;
@@ -302,9 +315,9 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         };
       }
     };
-  })
+  }])
 
-  .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', function ($http, $templateCache, $compile, $parse) {
+  .directive('typeaheadMatch', ['$http', '$templateCache', '$compile', '$parse', 'typeaheadConfig', function ($http, $templateCache, $compile, $parse, typeaheadConfig) {
     return {
       restrict:'E',
       scope:{
@@ -313,7 +326,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         query:'='
       },
       link:function (scope, element, attrs) {
-        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || 'template/typeahead/typeahead-match.html';
+        var tplUrl = $parse(attrs.templateUrl)(scope.$parent) || typeaheadConfig.matchTemplateUrl;
         $http.get(tplUrl, {cache: $templateCache}).success(function(tplContent){
            element.replaceWith($compile(tplContent.trim())(scope));
         });

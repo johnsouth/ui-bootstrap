@@ -310,27 +310,32 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
   }];
 })
 
-.directive( 'tooltipPopup', function () {
+.constant('tooltipConfig', {
+  templateUrl: 'template/tooltip/tooltip-popup.html',
+  htmlUnsafeTemplateUrl: 'template/tooltip/tooltip-html-unsafe-popup.html'
+})
+
+.directive( 'tooltipPopup', ['tooltipConfig', function (tooltipConfig) {
   return {
     restrict: 'E',
     replace: true,
     scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
-    templateUrl: 'template/tooltip/tooltip-popup.html'
+    templateUrl: tooltipConfig.templateUrl
   };
-})
+}])
 
 .directive( 'tooltip', [ '$tooltip', function ( $tooltip ) {
   return $tooltip( 'tooltip', 'tooltip', 'mouseenter' );
 }])
 
-.directive( 'tooltipHtmlUnsafePopup', function () {
+.directive( 'tooltipHtmlUnsafePopup', ['tooltipConfig', function (tooltipConfig) {
   return {
     restrict: 'E',
     replace: true,
     scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
-    templateUrl: 'template/tooltip/tooltip-html-unsafe-popup.html'
+    templateUrl: tooltipConfig.htmlUnsafeTemplateUrl
   };
-})
+}])
 
 .directive( 'tooltipHtmlUnsafe', [ '$tooltip', function ( $tooltip ) {
   return $tooltip( 'tooltipHtmlUnsafe', 'tooltip', 'mouseenter' );

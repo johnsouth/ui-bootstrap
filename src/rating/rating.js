@@ -3,7 +3,8 @@ angular.module('ui.bootstrap.rating', [])
 .constant('ratingConfig', {
   max: 5,
   stateOn: null,
-  stateOff: null
+  stateOff: null,
+  templateUrl: 'template/rating/rating.html'
 })
 
 .controller('RatingController', ['$scope', '$attrs', '$parse', 'ratingConfig', function($scope, $attrs, $parse, ratingConfig) {
@@ -59,7 +60,7 @@ angular.module('ui.bootstrap.rating', [])
   }
 }])
 
-.directive('rating', function() {
+.directive('rating', ['ratingConfig', function(ratingConfig) {
   return {
     restrict: 'EA',
     scope: {
@@ -68,7 +69,7 @@ angular.module('ui.bootstrap.rating', [])
       onLeave: '&'
     },
     controller: 'RatingController',
-    templateUrl: 'template/rating/rating.html',
+    templateUrl: ratingConfig.templateUrl,
     replace: true
   };
-});
+}]);

@@ -5,6 +5,7 @@
         <datepicker min="minDate" show-weeks="showWeeks"></datepicker>
     </div>
 
+<<<<<<< HEAD
     <hr>
 
     <div class="input-group">
@@ -12,6 +13,11 @@
         <span class="input-group-btn">
             <button class="btn btn-info" ng-click="open()"> <span class="glyphicon glyphicon-calendar"></span> </button>
         </span>
+=======
+    <div class="form-horizontal">
+        <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="dt" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+        <button class="btn" ng-click="open()"><i class="icon-calendar"></i></button>
+>>>>>>> origin/issue-1086
     </div>
 
     <hr />

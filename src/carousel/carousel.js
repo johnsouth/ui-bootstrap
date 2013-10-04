@@ -165,6 +165,10 @@ angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
   };
 }])
 
+.constant('carouselConfig', {
+  templateUrl: 'template/carousel/carousel.html'
+})
+
 /**
  * @ngdoc directive
  * @name ui.bootstrap.carousel.directive:carousel
@@ -203,14 +207,14 @@ angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
   </file>
 </example>
  */
-.directive('carousel', [function() {
+.directive('carousel', ['carouselConfig', function(carouselConfig) {
   return {
     restrict: 'EA',
     transclude: true,
     replace: true,
     controller: 'CarouselController',
     require: 'carousel',
-    templateUrl: 'template/carousel/carousel.html',
+    templateUrl: carouselConfig.templateUrl,
     scope: {
       interval: '=',
       noTransition: '=',
@@ -218,6 +222,10 @@ angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
     }
   };
 }])
+
+.constant('carouselSlideConfig', {
+  templateUrl: 'template/carousel/slide.html'
+})
 
 /**
  * @ngdoc directive
@@ -283,13 +291,13 @@ function CarouselDemoCtrl($scope) {
 </example>
 */
 
-.directive('slide', ['$parse', function($parse) {
+.directive('slide', ['$parse', 'carouselSlideConfig', function($parse, carouselSlideConfig) {
   return {
     require: '^carousel',
     restrict: 'EA',
     transclude: true,
     replace: true,
-    templateUrl: 'template/carousel/slide.html',
+    templateUrl: carouselSlideConfig.templateUrl, 
     scope: {
     },
     link: function (scope, element, attrs, carouselCtrl) {
