@@ -56,7 +56,7 @@ describe('$modal', function () {
 
       toHaveModalOpenWithContent: function(content, selector) {
 
-        var contentToCompare, modalDomEls = this.actual.find('body > div.modal');
+        var contentToCompare, modalDomEls = this.actual.find('body > div.modal > div.modal-dialog > div.modal-content');
 
         this.message = function() {
           return "Expected '" + angular.mock.dump(modalDomEls) + "' to be open with '" + content + "'.";
@@ -153,7 +153,7 @@ describe('$modal', function () {
       var modal = open({template: '<div>Content</div>'});
       expect($document).toHaveModalsOpen(1);
 
-      $document.find('body > div.modal-backdrop').click();
+      $document.find('body > div.modal').click();
       $rootScope.$digest();
 
       expect($document).toHaveModalsOpen(0);
@@ -360,6 +360,18 @@ describe('$modal', function () {
         expect($document).toHaveBackdrop();
       });
     });
+
+    describe('custom window classes', function () {
+
+      it('should support additional window class as string', function () {
+        open({
+          template: '<div>With custom window class</div>',
+          windowClass: 'additional'
+        });
+
+        expect($document.find('div.modal')).toHaveClass('additional');
+      });
+    });
   });
 
   describe('multiple modals', function () {
@@ -398,6 +410,15 @@ describe('$modal', function () {
       $rootScope.$digest();
 
       expect($document).toHaveModalsOpen(2);
+    });
+
+    it('multiple modals should not interfere with default options', function () {
+
+      var modal1 = open({template: '<div>Modal1</div>', backdrop: false});
+      var modal2 = open({template: '<div>Modal2</div>'});
+      $rootScope.$digest();
+
+      expect($document).toHaveBackdrop();
     });
   });
 });
