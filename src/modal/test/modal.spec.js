@@ -202,6 +202,18 @@ describe('$modal', function () {
       expect($document).toHaveModalOpenWithContent('Content', 'div');
       expect($document).not.toHaveBackdrop();
     });
+
+    it('should accept new objects with default options in a provider', function () {
+
+      $modalProvider.options = {
+        backdrop: false
+      };
+      var modal = open({template: '<div>Content</div>'});
+
+      expect($document).toHaveModalOpenWithContent('Content', 'div');
+      expect($document).not.toHaveBackdrop();
+    });
+
   });
 
   describe('option by option', function () {
@@ -339,12 +351,15 @@ describe('$modal', function () {
     describe('backdrop', function () {
 
       it('should not have any backdrop element if backdrop set to false', function () {
-        open({
+        var modal =open({
           template: '<div>No backdrop</div>',
           backdrop: false
         });
         expect($document).toHaveModalOpenWithContent('No backdrop', 'div');
         expect($document).not.toHaveBackdrop();
+
+        dismiss(modal);
+        expect($document).toHaveModalsOpen(0);
       });
 
       it('should not close modal on backdrop click if backdrop is specified as "static"', function () {
